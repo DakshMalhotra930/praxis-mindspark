@@ -97,14 +97,6 @@ export const GoogleLogin = () => {
               Sign in with Google
             </Button>
             
-            <div className="bg-warning/10 border border-warning/20 rounded-lg p-4">
-              <p className="text-sm text-warning font-medium mb-2">
-                ⚠️ Setup Required
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Please configure your Supabase environment variables (VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY) to enable Google authentication.
-              </p>
-            </div>
             
 
             <p className="text-xs text-muted-foreground text-center">
