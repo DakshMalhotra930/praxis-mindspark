@@ -10,7 +10,6 @@ import { SyllabusExplorer } from '@/components/SyllabusExplorer';
 import { ContentViewer } from '@/components/ContentViewer';
 import { AgenticStudyMode } from '@/components/AgenticStudyMode';
 import { DeepStudyPlan } from '@/components/DeepStudyPlan';
-import { HealthCheck } from '@/components/HealthCheck';
 import { Link } from 'react-router-dom';
 
 const Index = () => {
@@ -97,7 +96,7 @@ const Index = () => {
           {/* Main Content Area */}
           <div className="lg:col-span-9">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
-              <TabsList className="grid w-full grid-cols-4 mb-6">
+              <TabsList className="grid w-full grid-cols-3 mb-6">
                 <TabsTrigger value="syllabus" className="flex items-center gap-2">
                   <BookOpen className="h-4 w-4" />
                   Syllabus Study
@@ -109,10 +108,6 @@ const Index = () => {
                 <TabsTrigger value="study-plan" className="flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
                   Study Plan
-                </TabsTrigger>
-                <TabsTrigger value="health" className="flex items-center gap-2">
-                  <Activity className="h-4 w-4" />
-                  System Health
                 </TabsTrigger>
               </TabsList>
 
@@ -161,13 +156,6 @@ const Index = () => {
                 </Card>
               </TabsContent>
 
-              <TabsContent value="health" className="h-[calc(100%-4rem)]">
-                <Card className="academic-card h-full">
-                  <CardContent className="p-6 h-full">
-                    <HealthCheck />
-                  </CardContent>
-                </Card>
-              </TabsContent>
             </Tabs>
           </div>
         </div>

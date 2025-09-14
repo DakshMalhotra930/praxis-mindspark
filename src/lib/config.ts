@@ -4,9 +4,9 @@ export const CONFIG = {
   // API Configuration
   API: {
     BASE_URL: import.meta.env.VITE_API_BASE_URL || 'https://praxis-ai.fly.dev',
-    TIMEOUT: 30000,
-    RETRY_ATTEMPTS: 3,
-    RETRY_DELAY: 1000,
+    TIMEOUT: 5000, // Reduced timeout for faster fallback
+    RETRY_ATTEMPTS: 1, // Reduced retries for faster fallback
+    RETRY_DELAY: 500,
   },
   
   // Supabase Configuration
