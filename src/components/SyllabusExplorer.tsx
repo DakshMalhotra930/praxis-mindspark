@@ -325,4 +325,5 @@ export const SyllabusExplorer = ({ onTopicSelect }: SyllabusExplorerProps) => {
       </ScrollArea>
     </div>
   );
-};
+};['
+  ']
