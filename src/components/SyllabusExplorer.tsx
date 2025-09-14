@@ -23,7 +23,7 @@ const fallbackSyllabus: Subject[] = [
         id: 'mechanics',
         name: 'Mechanics',
         topics: [
-          {
+          { 
             id: 'kinematics',
             name: 'Kinematics',
             subtopics: [
@@ -59,7 +59,7 @@ const fallbackSyllabus: Subject[] = [
         id: 'thermodynamics',
         name: 'Thermodynamics',
         topics: [
-          {
+          { 
             id: 'heat',
             name: 'Heat and Temperature',
             subtopics: [
@@ -81,7 +81,7 @@ const fallbackSyllabus: Subject[] = [
         id: 'physical-chemistry',
         name: 'Physical Chemistry',
         topics: [
-          {
+          { 
             id: 'atomic-structure',
             name: 'Atomic Structure',
             subtopics: [
@@ -103,7 +103,7 @@ const fallbackSyllabus: Subject[] = [
         id: 'algebra',
         name: 'Algebra',
         topics: [
-          {
+          { 
             id: 'quadratic-equations',
             name: 'Quadratic Equations',
             subtopics: [
@@ -219,21 +219,21 @@ export const SyllabusExplorer = ({ onTopicSelect }: SyllabusExplorerProps) => {
       <ScrollArea className="flex-1 custom-scrollbar">
         <div className="p-4 space-y-2">
           {filteredSyllabus.map((subject) => (
-            <div key={subject.id} className="space-y-1">
-              <Collapsible
-                open={openSubjects[subject.id]}
-                onOpenChange={() => toggleSubject(subject.id)}
-              >
-                <CollapsibleTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start h-auto p-3 hover:bg-accent/50 syllabus-subject"
-                  >
-                    {openSubjects[subject.id] ? (
-                      <ChevronDown className="h-4 w-4 mr-2 flex-shrink-0" />
-                    ) : (
-                      <ChevronRight className="h-4 w-4 mr-2 flex-shrink-0" />
-                    )}
+              <div key={subject.id} className="space-y-1">
+                <Collapsible
+                  open={openSubjects[subject.id]}
+                  onOpenChange={() => toggleSubject(subject.id)}
+                >
+                  <CollapsibleTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start h-auto p-3 hover:bg-accent/50 syllabus-subject"
+                    >
+                      {openSubjects[subject.id] ? (
+                        <ChevronDown className="h-4 w-4 mr-2 flex-shrink-0" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4 mr-2 flex-shrink-0" />
+                      )}
                     <div className="flex items-center gap-2 flex-1 min-w-0">
                       <BookOpen className="h-4 w-4 text-primary flex-shrink-0" />
                       <span className="font-medium text-left truncate">{subject.name}</span>
@@ -241,26 +241,26 @@ export const SyllabusExplorer = ({ onTopicSelect }: SyllabusExplorerProps) => {
                         {subject.chapters.length} chapters
                       </Badge>
                     </div>
-                  </Button>
-                </CollapsibleTrigger>
-
+                    </Button>
+                  </CollapsibleTrigger>
+                  
                 <CollapsibleContent className="space-y-1 ml-4">
-                  {subject.chapters.map((chapter) => (
-                    <div key={chapter.id} className="space-y-1">
-                      <Collapsible
-                        open={openChapters[chapter.id]}
-                        onOpenChange={() => toggleChapter(chapter.id)}
-                      >
-                        <CollapsibleTrigger asChild>
-                          <Button
-                            variant="ghost"
+                    {subject.chapters.map((chapter) => (
+                      <div key={chapter.id} className="space-y-1">
+                        <Collapsible
+                          open={openChapters[chapter.id]}
+                          onOpenChange={() => toggleChapter(chapter.id)}
+                        >
+                          <CollapsibleTrigger asChild>
+                            <Button
+                              variant="ghost"
                             className="w-full justify-start h-auto p-2 hover:bg-accent/30 syllabus-chapter"
-                          >
-                            {openChapters[chapter.id] ? (
-                              <ChevronDown className="h-3 w-3 mr-2 flex-shrink-0" />
-                            ) : (
-                              <ChevronRight className="h-3 w-3 mr-2 flex-shrink-0" />
-                            )}
+                            >
+                              {openChapters[chapter.id] ? (
+                                <ChevronDown className="h-3 w-3 mr-2 flex-shrink-0" />
+                              ) : (
+                                <ChevronRight className="h-3 w-3 mr-2 flex-shrink-0" />
+                              )}
                             <div className="flex items-center gap-2 flex-1 min-w-0">
                               <FileText className="h-3 w-3 text-muted-foreground flex-shrink-0" />
                               <span className="text-sm text-left truncate">{chapter.name}</span>
@@ -268,62 +268,61 @@ export const SyllabusExplorer = ({ onTopicSelect }: SyllabusExplorerProps) => {
                                 {chapter.topics.length} topics
                               </Badge>
                             </div>
-                          </Button>
-                        </CollapsibleTrigger>
-
+                            </Button>
+                          </CollapsibleTrigger>
+                          
                         <CollapsibleContent className="space-y-1 ml-4">
-                          {chapter.topics.map((topic) => (
-                            <div key={topic.id} className="space-y-1">
-                              <Collapsible
-                                open={openTopics[topic.id]}
-                                onOpenChange={() => toggleTopic(topic.id)}
-                              >
-                                <CollapsibleTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    className="w-full justify-start h-auto p-2 hover:bg-accent/20 syllabus-topic"
+                            {chapter.topics.map((topic) => (
+                              <div key={topic.id} className="space-y-1">
+                                  <Collapsible
+                                    open={openTopics[topic.id]}
+                                    onOpenChange={() => toggleTopic(topic.id)}
                                   >
-                                    {openTopics[topic.id] ? (
-                                      <ChevronDown className="h-3 w-3 mr-2 flex-shrink-0" />
-                                    ) : (
-                                      <ChevronRight className="h-3 w-3 mr-2 flex-shrink-0" />
-                                    )}
+                                    <CollapsibleTrigger asChild>
+                                      <Button
+                                        variant="ghost"
+                                    className="w-full justify-start h-auto p-2 hover:bg-accent/20 syllabus-topic"
+                                      >
+                                        {openTopics[topic.id] ? (
+                                          <ChevronDown className="h-3 w-3 mr-2 flex-shrink-0" />
+                                        ) : (
+                                          <ChevronRight className="h-3 w-3 mr-2 flex-shrink-0" />
+                                        )}
                                     <span className="text-sm text-left truncate">{topic.name}</span>
                                     {topic.subtopics && topic.subtopics.length > 0 && (
                                       <Badge variant="outline" className="ml-auto text-xs">
                                         {topic.subtopics.length} subtopics
                                       </Badge>
                                     )}
-                                  </Button>
-                                </CollapsibleTrigger>
-
+                                      </Button>
+                                    </CollapsibleTrigger>
+                                    
                                 <CollapsibleContent className="space-y-1 ml-4">
                                   {topic.subtopics && topic.subtopics.map((subtopic, index) => (
-                                    <Button
+                                        <Button
                                       key={index}
-                                      variant="ghost"
+                                          variant="ghost"
                                       className="w-full justify-start h-auto p-2 text-xs hover:bg-primary/10 hover:text-primary syllabus-subtopic"
                                       onClick={() => handleTopicClick(subject.name, chapter.name, subtopic)}
-                                    >
+                                        >
                                       <div className="w-1 h-1 bg-muted-foreground rounded-full mr-2 flex-shrink-0" />
                                       <span className="text-left truncate">{subtopic}</span>
-                                    </Button>
-                                  ))}
-                                </CollapsibleContent>
-                              </Collapsible>
-                            </div>
-                          ))}
-                        </CollapsibleContent>
-                      </Collapsible>
-                    </div>
-                  ))}
-                </CollapsibleContent>
-              </Collapsible>
-            </div>
+                                        </Button>
+                                      ))}
+                                    </CollapsibleContent>
+                                  </Collapsible>
+                              </div>
+                            ))}
+                          </CollapsibleContent>
+                        </Collapsible>
+                      </div>
+                    ))}
+                  </CollapsibleContent>
+                </Collapsible>
+              </div>
           ))}
         </div>
       </ScrollArea>
     </div>
   );
-};['
-  ']
+};
