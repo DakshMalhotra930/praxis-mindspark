@@ -9,6 +9,7 @@ import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { ApiService, type ContentResponse, type QuizResponse } from '@/lib/api';
 
 interface ContentViewerProps {
   subject: string;
@@ -28,8 +29,6 @@ interface GeneratedContent {
     }>;
   };
 }
-
-const API_BASE_URL = 'https://praxis-ai.fly.dev';
 
 export const ContentViewer = ({ subject, chapter, topic }: ContentViewerProps) => {
   const { user } = useAuth();
@@ -73,30 +72,22 @@ export const ContentViewer = ({ subject, chapter, topic }: ContentViewerProps) =
         return;
       }
 
-      const response = await fetch(`${API_BASE_URL}/api/generate-content`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: user.user_id,
-          subject,
-          chapter,
-          topic,
-        }),
+      const response = await ApiService.generateContent({
+        user_id: user.user_id,
+        subject,
+        chapter,
+        topic,
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to generate content');
+      if (response.success && response.data) {
+        setContent(response.data.content || generateFallbackContent());
+        toast({
+          title: "Content Generated",
+          description: `AI-generated study material for ${topic} is ready!`,
+        });
+      } else {
+        throw new Error(response.error || 'Failed to generate content');
       }
-
-      const data = await response.json();
-      setContent(data.content || generateFallbackContent());
-      
-      toast({
-        title: "Content Generated",
-        description: `Study material for ${topic} is ready!`,
-      });
     } catch (error) {
       console.error('Content generation failed:', error);
       
@@ -104,8 +95,9 @@ export const ContentViewer = ({ subject, chapter, topic }: ContentViewerProps) =
       setContent(generateFallbackContent());
       
       toast({
-        title: "Content Generated",
-        description: "Using cached content for your study session.",
+        title: "Using Fallback Content",
+        description: "AI service unavailable. Using cached content for your study session.",
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -147,24 +139,21 @@ export const ContentViewer = ({ subject, chapter, topic }: ContentViewerProps) =
         return;
       }
 
-      const response = await fetch(`${API_BASE_URL}/api/generate-quiz`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: user.user_id,
-          subject,
-          chapter,
-          topic,
-          difficulty: 'medium',
-          question_count: 5,
-        }),
+      const response = await ApiService.generateQuiz({
+        user_id: user.user_id,
+        subject,
+        chapter,
+        topic,
+        difficulty: 'medium',
+        question_count: 5,
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        setContent(prev => prev ? { ...prev, quiz: data.quiz } : null);
+      if (response.success && response.data) {
+        setContent(prev => prev ? { ...prev, quiz: response.data!.quiz } : null);
+        toast({
+          title: "Quiz Generated",
+          description: "AI-generated quiz is ready! Test your knowledge.",
+        });
       } else {
         // Generate fallback quiz
         const fallbackQuiz = {
@@ -194,14 +183,14 @@ export const ContentViewer = ({ subject, chapter, topic }: ContentViewerProps) =
           ]
         };
         setContent(prev => prev ? { ...prev, quiz: fallbackQuiz } : null);
+        toast({
+          title: "Using Fallback Quiz",
+          description: "AI service unavailable. Using sample questions.",
+          variant: "destructive",
+        });
       }
 
       setShowQuiz(true);
-      
-      toast({
-        title: "Quiz Generated",
-        description: "Test your knowledge with these questions!",
-      });
     } catch (error) {
       console.error('Quiz generation failed:', error);
       toast({

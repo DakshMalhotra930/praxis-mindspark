@@ -11,6 +11,7 @@ import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 import { useAuth } from '@/hooks/useAuth';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { useToast } from '@/hooks/use-toast';
+import { ApiService, type ChatResponse, type ImageSolveResponse } from '@/lib/api';
 
 interface ChatMessage {
   id: string;
@@ -31,7 +32,6 @@ interface StudySession {
   last_activity: string;
 }
 
-const API_BASE_URL = 'https://praxis-ai.fly.dev';
 
 export const AgenticStudyMode = () => {
   const { user } = useAuth();
@@ -191,39 +191,26 @@ What would you like to study first?`,
       
       if (imageData) {
         // Image problem solving
-        response = await fetch(`${API_BASE_URL}/api/image-solve`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            user_id: user.user_id,
-            session_id: currentSession.session_id,
-            image_data: imageData,
-            question: messageContent,
-          }),
+        response = await ApiService.solveImage({
+          user_id: user.user_id,
+          session_id: currentSession.session_id,
+          image_data: imageData,
+          question: messageContent,
         });
       } else {
         // Regular chat
-        response = await fetch(`${API_BASE_URL}/api/chat`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            user_id: user.user_id,
-            session_id: currentSession.session_id,
-            message: messageContent,
-            context: messages.slice(-5), // Send last 5 messages for context
-          }),
+        response = await ApiService.chat({
+          user_id: user.user_id,
+          session_id: currentSession.session_id,
+          message: messageContent,
+          context: messages.slice(-5), // Send last 5 messages for context
         });
       }
 
       let assistantContent = '';
       
-      if (response.ok) {
-        const data = await response.json();
-        assistantContent = data.response || data.solution || 'I apologize, but I encountered an issue processing your request.';
+      if (response.success && response.data) {
+        assistantContent = response.data.response || response.data.solution || 'I apologize, but I encountered an issue processing your request.';
       } else {
         // Fallback response
         if (imageData) {

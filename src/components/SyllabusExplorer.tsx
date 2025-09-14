@@ -4,35 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-
-interface Topic {
-  id: string;
-  name: string;
-  subtopics?: string[];
-  content?: {
-    learn: string;
-    revise: string;
-  };
-}
-
-interface Chapter {
-  id: string;
-  name: string;
-  class: 11 | 12;
-  topics: Topic[];
-}
-
-interface Subject {
-  id: string;
-  name: string;
-  chapters: Chapter[];
-}
+import { ApiService, type Subject, type Chapter, type Topic } from '@/lib/api';
+import { useToast } from '@/hooks/use-toast';
 
 interface SyllabusExplorerProps {
   onTopicSelect: (subject: string, chapter: string, topic: string) => void;
 }
-
-const API_BASE_URL = 'https://praxis-ai.fly.dev';
 
 // Fallback syllabus data with detailed subtopics
 const fallbackSyllabus: Subject[] = [
@@ -822,6 +799,7 @@ const fallbackSyllabus: Subject[] = [
 ];
 
 export const SyllabusExplorer = ({ onTopicSelect }: SyllabusExplorerProps) => {
+  const { toast } = useToast();
   const [syllabus, setSyllabus] = useState<Subject[]>(fallbackSyllabus);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -844,15 +822,29 @@ export const SyllabusExplorer = ({ onTopicSelect }: SyllabusExplorerProps) => {
   const fetchSyllabus = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/api/syllabus`);
+      const response = await ApiService.getSyllabus();
       
-      if (response.ok) {
-        const data = await response.json();
-        setSyllabus(data.syllabus || fallbackSyllabus);
+      if (response.success && response.data) {
+        setSyllabus(response.data.syllabus || fallbackSyllabus);
+        toast({
+          title: "Syllabus Loaded",
+          description: "Latest JEE syllabus data loaded successfully.",
+        });
+      } else {
+        console.warn('Failed to fetch syllabus from API, using fallback data:', response.error);
+        toast({
+          title: "Using Cached Data",
+          description: "Loading syllabus from cache. Some features may be limited.",
+          variant: "destructive",
+        });
       }
     } catch (error) {
       console.warn('Failed to fetch syllabus from API, using fallback data:', error);
-      // Keep using fallback data
+      toast({
+        title: "Connection Issue",
+        description: "Using cached syllabus data. Check your connection.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }

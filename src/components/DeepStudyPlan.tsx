@@ -10,6 +10,7 @@ import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 import { useAuth } from '@/hooks/useAuth';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { useToast } from '@/hooks/use-toast';
+import { ApiService, type ChatResponse, type StudyPlanResponse, type StudyPlan } from '@/lib/api';
 
 interface ChatMessage {
   id: string;
@@ -18,22 +19,6 @@ interface ChatMessage {
   timestamp: Date;
 }
 
-interface StudyPlan {
-  id: string;
-  title: string;
-  description: string;
-  duration: string;
-  subjects: string[];
-  goals: string[];
-  schedule: {
-    week: number;
-    topics: string[];
-    goals: string[];
-  }[];
-  created_at: string;
-}
-
-const API_BASE_URL = 'https://praxis-ai.fly.dev';
 
 export const DeepStudyPlan = () => {
   const { user } = useAuth();
@@ -137,29 +122,17 @@ Let's create a study plan that's perfect for you! 🚀`,
         return;
       }
 
-      const response = await fetch(`${API_BASE_URL}/api/study-plan-chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: user.user_id,
-          message: messageContent,
-          context: messages.slice(-5), // Send last 5 messages for context
-          current_plan: currentPlan,
-        }),
+      const response = await ApiService.studyPlanChat({
+        user_id: user.user_id,
+        message: messageContent,
+        context: messages.slice(-5), // Send last 5 messages for context
+        current_plan: currentPlan,
       });
 
       let assistantContent = '';
       
-      if (response.ok) {
-        const data = await response.json();
-        assistantContent = data.response || 'I apologize, but I encountered an issue processing your request.';
-        
-        // Check if a study plan was generated
-        if (data.study_plan) {
-          setCurrentPlan(data.study_plan);
-        }
+      if (response.success && response.data) {
+        assistantContent = response.data.response || 'I apologize, but I encountered an issue processing your request.';
       } else {
         // Fallback response
         assistantContent = generateFallbackResponse(messageContent);
@@ -324,26 +297,18 @@ The more details you share, the better I can tailor your study plan. What would 
         return;
       }
 
-      const response = await fetch(`${API_BASE_URL}/api/generate-study-plan`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: user.user_id,
-          chat_history: messages,
-          preferences: {
-            subjects: ['Physics', 'Chemistry', 'Mathematics'],
-            duration: 'flexible',
-            intensity: 'high'
-          }
-        }),
+      const response = await ApiService.generateStudyPlan({
+        user_id: user.user_id,
+        chat_history: messages,
+        preferences: {
+          subjects: ['Physics', 'Chemistry', 'Mathematics'],
+          duration: 'flexible',
+          intensity: 'high'
+        }
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        setCurrentPlan(data.study_plan);
-        
+      if (response.success && response.data) {
+        setCurrentPlan(response.data.study_plan);
         toast({
           title: "Study Plan Generated!",
           description: "Your personalized JEE study plan is ready.",
@@ -390,8 +355,9 @@ The more details you share, the better I can tailor your study plan. What would 
         setCurrentPlan(fallbackPlan);
         
         toast({
-          title: "Study Plan Created",
-          description: "Generated a comprehensive study plan based on our conversation.",
+          title: "Using Fallback Plan",
+          description: "AI service unavailable. Generated a comprehensive study plan based on our conversation.",
+          variant: "destructive",
         });
       }
     } catch (error) {

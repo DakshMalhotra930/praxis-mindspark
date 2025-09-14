@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from './useAuth';
+import { ApiService } from '@/lib/api';
+import { CONFIG } from '@/lib/config';
 
 export interface UsageStatus {
   userType: 'free' | 'premium';
@@ -12,11 +14,8 @@ export interface UsageStatus {
 }
 
 // Premium users list
-const PREMIUM_USERS = [
-  'dakshmalhotra930@gmail.com'
-];
+const PREMIUM_USERS = CONFIG.PREMIUM_USERS;
 
-const API_BASE_URL = 'https://praxis-ai.fly.dev';
 
 export const useUsageTracking = () => {
   const { user, isAuthenticated } = useAuth();
@@ -73,7 +72,7 @@ export const useUsageTracking = () => {
         }
       }
 
-      const usageLimit = 5;
+      const usageLimit = CONFIG.USAGE.FREE_DAILY_LIMIT;
 
       setUsageStatus({
         userType: 'free',
@@ -126,17 +125,11 @@ export const useUsageTracking = () => {
 
       // Track usage on backend (fire and forget)
       try {
-        await fetch(`${API_BASE_URL}/api/track-usage`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            user_id: user.user_id,
-            feature_name: featureName,
-            session_id: sessionId,
-            timestamp: now,
-          }),
+        await ApiService.trackUsage({
+          user_id: user.user_id,
+          feature_name: featureName,
+          session_id: sessionId,
+          timestamp: now,
         });
       } catch (apiError) {
         console.warn('Backend usage tracking failed:', apiError);
