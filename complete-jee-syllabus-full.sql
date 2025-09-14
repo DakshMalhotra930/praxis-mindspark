@@ -1,4 +1,5 @@
 -- Complete JEE Syllabus Data - Full Version
+-- Updated by DakshMalhotra930 for complete backend integration
 -- This script adds all subjects, chapters, topics, and subtopics for JEE preparation
 
 -- =============================================

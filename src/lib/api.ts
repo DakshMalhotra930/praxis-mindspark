@@ -1,4 +1,5 @@
 // API Configuration and Service Layer
+// Updated by DakshMalhotra930 for complete backend integration
 import { supabase } from './supabase';
 import { CONFIG } from './config';
 

@@ -1,4 +1,5 @@
 -- Praxis AI - Safe Supabase Database Schema
+-- Updated by DakshMalhotra930 for complete backend integration
 -- This version handles existing tables gracefully
 
 -- Enable necessary extensions

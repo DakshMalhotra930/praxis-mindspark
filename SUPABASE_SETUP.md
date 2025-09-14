@@ -1,4 +1,5 @@
 # Praxis AI - Supabase Database Setup Guide
+<!-- Updated by DakshMalhotra930 for complete backend integration -->
 
 ## 🚀 Quick Setup (Recommended)
 

@@ -1,4 +1,5 @@
 -- Praxis AI - Complete Supabase Database Schema
+-- Updated by DakshMalhotra930 for complete backend integration
 -- This schema supports both frontend and Fly.io backend integration
 
 -- Enable necessary extensions

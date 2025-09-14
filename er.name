@@ -1,0 +1,5 @@
+[33m7dc9ca8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m backend
+[33m7784934[m Add premium user features
+[33mbd58a8c[m Add subtopics to syllabus
+[33m29cb80f[m Fix navigation and loading issues
+[33m40b8e0f[m Configure Supabase environment variables

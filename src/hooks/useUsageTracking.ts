@@ -1,3 +1,4 @@
+// Updated by DakshMalhotra930 for complete backend integration
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from './useAuth';
 import { ApiService } from '@/lib/api';

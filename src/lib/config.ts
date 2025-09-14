@@ -1,4 +1,5 @@
 // Environment Configuration
+// Updated by DakshMalhotra930 for complete backend integration
 export const CONFIG = {
   // API Configuration
   API: {

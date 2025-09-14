@@ -1,3 +1,4 @@
+// Updated by DakshMalhotra930 for complete backend integration
 import { useState, useEffect } from 'react';
 import { ChevronRight, ChevronDown, BookOpen, FileText, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
