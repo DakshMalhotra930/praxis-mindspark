@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '@/lib/supabase';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 export interface User {
   user_id: string;
@@ -15,8 +17,6 @@ interface AuthState {
   error: string | null;
 }
 
-const API_BASE_URL = 'https://praxis-ai.fly.dev';
-
 export const useAuth = () => {
   const [authState, setAuthState] = useState<AuthState>({
     isAuthenticated: false,
@@ -27,11 +27,21 @@ export const useAuth = () => {
 
   const checkAuthStatus = useCallback(async () => {
     try {
-      const token = localStorage.getItem('authToken');
-      const userData = localStorage.getItem('userData');
+      const { data: { session }, error } = await supabase.auth.getSession();
       
-      if (token && userData) {
-        const user = JSON.parse(userData);
+      if (error) {
+        throw error;
+      }
+      
+      if (session?.user) {
+        const user: User = {
+          user_id: session.user.id,
+          email: session.user.email || '',
+          name: session.user.user_metadata.full_name || session.user.email || '',
+          subscription_status: 'FREE',
+          is_premium: false,
+        };
+        
         setAuthState({
           isAuthenticated: true,
           user,
@@ -39,7 +49,12 @@ export const useAuth = () => {
           error: null,
         });
       } else {
-        setAuthState(prev => ({ ...prev, isLoading: false }));
+        setAuthState({
+          isAuthenticated: false,
+          user: null,
+          isLoading: false,
+          error: null,
+        });
       }
     } catch (error) {
       console.error('Auth check failed:', error);
@@ -52,38 +67,20 @@ export const useAuth = () => {
     }
   }, []);
 
-  const login = useCallback(async (googleTokenResponse: any) => {
+  const login = useCallback(async () => {
     try {
       setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
 
-      const response = await fetch(`${API_BASE_URL}/api/google-login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin,
         },
-        body: JSON.stringify({
-          token: googleTokenResponse.credential,
-        }),
       });
 
-      if (!response.ok) {
-        throw new Error('Login failed');
+      if (error) {
+        throw error;
       }
-
-      const data = await response.json();
-      
-      // Store auth data
-      localStorage.setItem('authToken', data.token || 'authenticated');
-      localStorage.setItem('userData', JSON.stringify(data.user));
-
-      setAuthState({
-        isAuthenticated: true,
-        user: data.user,
-        isLoading: false,
-        error: null,
-      });
-
-      return data;
     } catch (error) {
       console.error('Login error:', error);
       setAuthState({
@@ -96,19 +93,28 @@ export const useAuth = () => {
     }
   }, []);
 
-  const logout = useCallback(() => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userData');
-    setAuthState({
-      isAuthenticated: false,
-      user: null,
-      isLoading: false,
-      error: null,
-    });
+  const logout = useCallback(async () => {
+    try {
+      await supabase.auth.signOut();
+      setAuthState({
+        isAuthenticated: false,
+        user: null,
+        isLoading: false,
+        error: null,
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   }, []);
 
   useEffect(() => {
     checkAuthStatus();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      checkAuthStatus();
+    });
+
+    return () => subscription.unsubscribe();
   }, [checkAuthStatus]);
 
   return {
