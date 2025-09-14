@@ -27,10 +27,29 @@ export const useAuth = () => {
 
   const checkAuthStatus = useCallback(async () => {
     try {
+      // Check if Supabase is properly configured
+      if (!supabase) {
+        console.warn('Supabase not configured, using demo mode');
+        setAuthState({
+          isAuthenticated: false,
+          user: null,
+          isLoading: false,
+          error: null,
+        });
+        return;
+      }
+
       const { data: { session }, error } = await supabase.auth.getSession();
       
       if (error) {
-        throw error;
+        console.warn('Supabase auth error:', error);
+        setAuthState({
+          isAuthenticated: false,
+          user: null,
+          isLoading: false,
+          error: null,
+        });
+        return;
       }
       
       if (session?.user) {
@@ -62,7 +81,7 @@ export const useAuth = () => {
         isAuthenticated: false,
         user: null,
         isLoading: false,
-        error: 'Authentication check failed',
+        error: null,
       });
     }
   }, []);
@@ -70,6 +89,11 @@ export const useAuth = () => {
   const login = useCallback(async () => {
     try {
       setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
+
+      // Check if Supabase is properly configured
+      if (!supabase) {
+        throw new Error('Supabase not configured. Please add your Supabase credentials.');
+      }
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
