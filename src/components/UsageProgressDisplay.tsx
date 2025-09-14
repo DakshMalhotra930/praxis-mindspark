@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useUsageTracking } from '@/hooks/useUsageTracking';
 import { useAuth } from '@/hooks/useAuth';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 interface UsageProgressDisplayProps {
   className?: string;
@@ -97,13 +98,15 @@ export const UsageProgressDisplay = ({ className = "", showUpgrade = false }: Us
               <div className="flex items-center gap-2">
                 <span className="font-semibold">Free Plan</span>
                 {showUpgrade && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-xs h-6 px-2 hover-glow border-primary/20 hover:border-primary/40"
-                  >
-                    Upgrade to Pro
-                  </Button>
+                  <Link to="/pricing">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-xs h-6 px-2 hover-glow border-primary/20 hover:border-primary/40"
+                    >
+                      Upgrade to Pro
+                    </Button>
+                  </Link>
                 )}
               </div>
               <p className="text-sm text-muted-foreground">
@@ -143,7 +146,9 @@ export const UsageProgressDisplay = ({ className = "", showUpgrade = false }: Us
             <div className="text-xs text-center p-2 bg-warning/10 rounded-lg border border-warning/20">
               <p className="text-warning font-medium">Daily limit reached</p>
               <p className="text-muted-foreground">
-                Upgrade to Pro for unlimited access
+                <Link to="/pricing" className="hover:text-foreground transition-colors">
+                  Upgrade to Pro for unlimited access
+                </Link>
               </p>
             </div>
           )}

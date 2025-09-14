@@ -239,10 +239,16 @@ export const SyllabusExplorer = ({ onTopicSelect }: SyllabusExplorerProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [openSubjects, setOpenSubjects] = useState<Record<string, boolean>>({
     physics: true, // Open physics by default
+    chemistry: false,
+    mathematics: false,
   });
-  const [openChapters, setOpenChapters] = useState<Record<string, boolean>>({});
+  const [openChapters, setOpenChapters] = useState<Record<string, boolean>>({
+    mechanics: true, // Open first physics chapter by default
+  });
 
   useEffect(() => {
+    // Use fallback data immediately, then try to fetch from API
+    setSyllabus(fallbackSyllabus);
     fetchSyllabus();
   }, []);
 
@@ -324,7 +330,7 @@ export const SyllabusExplorer = ({ onTopicSelect }: SyllabusExplorerProps) => {
                   <CollapsibleTrigger asChild>
                     <Button
                       variant="ghost"
-                      className="w-full justify-start h-auto p-2 hover:bg-accent/50"
+                      className="w-full justify-start h-auto p-3 hover:bg-accent/50 syllabus-subject"
                     >
                       {openSubjects[subject.id] ? (
                         <ChevronDown className="h-4 w-4 mr-2 flex-shrink-0" />
@@ -346,7 +352,7 @@ export const SyllabusExplorer = ({ onTopicSelect }: SyllabusExplorerProps) => {
                           <CollapsibleTrigger asChild>
                             <Button
                               variant="ghost"
-                              className="w-full justify-start h-auto p-2 hover:bg-accent/50 text-sm"
+                              className="w-full justify-start h-auto p-2 hover:bg-accent/50 text-sm syllabus-chapter"
                             >
                               {openChapters[chapter.id] ? (
                                 <ChevronDown className="h-3 w-3 mr-2 flex-shrink-0" />
@@ -369,10 +375,10 @@ export const SyllabusExplorer = ({ onTopicSelect }: SyllabusExplorerProps) => {
                                 key={topic.id}
                                 variant="ghost"
                                 onClick={() => onTopicSelect(subject.name, chapter.name, topic.name)}
-                                className="w-full justify-start h-auto p-2 hover:bg-primary/10 text-sm interactive"
+                                className="w-full justify-start h-auto p-2 hover:bg-primary/10 text-sm interactive syllabus-topic"
                               >
-                                <div className="h-2 w-2 rounded-full bg-muted-foreground mr-3 flex-shrink-0" />
-                                <span className="text-left">{topic.name}</span>
+                                <div className="h-2 w-2 rounded-full bg-primary mr-3 flex-shrink-0" />
+                                <span className="text-left text-foreground">{topic.name}</span>
                               </Button>
                             ))}
                           </CollapsibleContent>

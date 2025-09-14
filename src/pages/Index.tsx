@@ -37,7 +37,7 @@ const Index = () => {
             <nav className="hidden md:flex items-center gap-4">
               <Link 
                 to="/pricing" 
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors hover-glow"
               >
                 Pricing
               </Link>

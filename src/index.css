@@ -179,6 +179,19 @@
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--accent));
   }
+
+  /* Syllabus Explorer specific styles */
+  .syllabus-topic {
+    @apply min-h-[2.5rem] flex items-center text-left;
+  }
+
+  .syllabus-chapter {
+    @apply min-h-[2.75rem] flex items-center;
+  }
+
+  .syllabus-subject {
+    @apply min-h-[3rem] flex items-center font-medium;
+  }
 }
 
 @layer utilities {

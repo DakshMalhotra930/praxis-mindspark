@@ -119,9 +119,11 @@ const Pricing = () => {
                     </li>
                   ))}
                 </ul>
-                <Button className="w-full bg-gradient-primary hover:bg-gradient-secondary hover-glow">
-                  Upgrade to Pro
-                </Button>
+                <Link to="/">
+                  <Button className="w-full bg-gradient-primary hover:bg-gradient-secondary hover-glow">
+                    Upgrade to Pro
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           </div>
@@ -231,9 +233,11 @@ const Pricing = () => {
             <p className="text-lg opacity-90">
               Join thousands of students who are already using Praxis AI to excel in their JEE preparation.
             </p>
-            <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-white/90">
-              Start Your Journey Today
-            </Button>
+            <Link to="/">
+              <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-white/90">
+                Start Your Journey Today
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
