@@ -8,116 +8,14 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { Badge } from '@/components/ui/badge';
 import { ApiService, type Subject, type Chapter, type Topic } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
+import { completeJeeSyllabus } from '@/data/syllabusData';
 
 interface SyllabusExplorerProps {
   onTopicSelect: (topic: { subject: string; chapter: string; topic: string }) => void;
 }
 
-// Fallback syllabus data for instant loading
-const fallbackSyllabus: Subject[] = [
-  {
-    id: 'physics',
-    name: 'Physics',
-    chapters: [
-      {
-        id: 'mechanics',
-        name: 'Mechanics',
-        topics: [
-          { 
-            id: 'kinematics',
-            name: 'Kinematics',
-            subtopics: [
-              'Motion in One Dimension',
-              'Motion in Two Dimensions',
-              'Projectile Motion',
-              'Relative Motion'
-            ]
-          },
-          {
-            id: 'dynamics',
-            name: 'Dynamics',
-            subtopics: [
-              'Newton\'s Laws of Motion',
-              'Friction',
-              'Circular Motion',
-              'Work, Energy and Power'
-            ]
-          },
-          {
-            id: 'gravitation',
-            name: 'Gravitation',
-            subtopics: [
-              'Newton\'s Law of Gravitation',
-              'Gravitational Field',
-              'Gravitational Potential',
-              'Kepler\'s Laws'
-            ]
-          }
-        ]
-      },
-      {
-        id: 'thermodynamics',
-        name: 'Thermodynamics',
-        topics: [
-          { 
-            id: 'heat',
-            name: 'Heat and Temperature',
-            subtopics: [
-              'Thermal Expansion',
-              'Heat Transfer',
-              'Specific Heat',
-              'Latent Heat'
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'chemistry',
-    name: 'Chemistry',
-    chapters: [
-      {
-        id: 'physical-chemistry',
-        name: 'Physical Chemistry',
-        topics: [
-          { 
-            id: 'atomic-structure',
-            name: 'Atomic Structure',
-            subtopics: [
-              'Bohr\'s Model',
-              'Quantum Numbers',
-              'Electronic Configuration',
-              'Periodic Properties'
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'mathematics',
-    name: 'Mathematics',
-    chapters: [
-      {
-        id: 'algebra',
-        name: 'Algebra',
-        topics: [
-          { 
-            id: 'quadratic-equations',
-            name: 'Quadratic Equations',
-            subtopics: [
-              'Nature of Roots',
-              'Sum and Product of Roots',
-              'Graphical Representation',
-              'Applications'
-            ]
-          }
-        ]
-      }
-    ]
-  }
-];
+// Use complete JEE syllabus data
+const fallbackSyllabus = completeJeeSyllabus;
 
 export const SyllabusExplorer = ({ onTopicSelect }: SyllabusExplorerProps) => {
   const { toast } = useToast();
