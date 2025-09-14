@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { LogOut, Settings, Crown, BookOpen, Lightbulb } from 'lucide-react';
+import { LogOut, Settings, Crown, BookOpen, Lightbulb, Calendar } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { UsageProgressDisplay } from '@/components/UsageProgressDisplay';
 import { SyllabusExplorer } from '@/components/SyllabusExplorer';
 import { ContentViewer } from '@/components/ContentViewer';
 import { AgenticStudyMode } from '@/components/AgenticStudyMode';
+import { DeepStudyPlan } from '@/components/DeepStudyPlan';
 import { Link } from 'react-router-dom';
 
 const Index = () => {
@@ -94,7 +95,7 @@ const Index = () => {
           {/* Main Content Area */}
           <div className="lg:col-span-9">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsList className="grid w-full grid-cols-3 mb-6">
                 <TabsTrigger value="syllabus" className="flex items-center gap-2">
                   <BookOpen className="h-4 w-4" />
                   Syllabus Study
@@ -102,6 +103,10 @@ const Index = () => {
                 <TabsTrigger value="deep-study" className="flex items-center gap-2">
                   <Lightbulb className="h-4 w-4" />
                   Deep Study
+                </TabsTrigger>
+                <TabsTrigger value="study-plan" className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  Study Plan
                 </TabsTrigger>
               </TabsList>
 
@@ -138,6 +143,14 @@ const Index = () => {
                 <Card className="academic-card h-full">
                   <CardContent className="p-6 h-full">
                     <AgenticStudyMode />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="study-plan" className="h-[calc(100%-4rem)]">
+                <Card className="academic-card h-full">
+                  <CardContent className="p-6 h-full">
+                    <DeepStudyPlan />
                   </CardContent>
                 </Card>
               </TabsContent>

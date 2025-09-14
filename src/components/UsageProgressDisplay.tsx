@@ -66,7 +66,7 @@ export const UsageProgressDisplay = ({ className = "", showUpgrade = false }: Us
                   </Badge>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Unlimited access to all features
+                  Unlimited access • Premium features
                 </p>
               </div>
             </div>

@@ -11,6 +11,11 @@ export interface UsageStatus {
   isPremium: boolean;
 }
 
+// Premium users list
+const PREMIUM_USERS = [
+  'dakshmalhotra930@gmail.com'
+];
+
 const API_BASE_URL = 'https://praxis-ai.fly.dev';
 
 export const useUsageTracking = () => {
@@ -19,6 +24,9 @@ export const useUsageTracking = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Check if user is premium
+  const isPremiumUser = user?.email && PREMIUM_USERS.includes(user.email);
+
   const fetchUsageStatus = useCallback(async () => {
     if (!user?.user_id || !isAuthenticated) return;
 
@@ -26,7 +34,22 @@ export const useUsageTracking = () => {
       setLoading(true);
       setError(null);
 
-      // For now, we'll use a simple local check until the full API is ready
+      // If user is premium, set unlimited usage
+      if (isPremiumUser) {
+        setUsageStatus({
+          userType: 'premium',
+          usageCount: 0,
+          usageLimit: 999999,
+          canUseFeature: true,
+          lastUsedAt: null,
+          resetTime: null,
+          isPremium: true,
+        });
+        setLoading(false);
+        return;
+      }
+
+      // For non-premium users, use local storage tracking
       const lastUsageKey = `usage_${user.user_id}`;
       const lastUsageData = localStorage.getItem(lastUsageKey);
       
@@ -50,17 +73,16 @@ export const useUsageTracking = () => {
         }
       }
 
-      const isPremium = user.is_premium || user.subscription_status === 'PRO';
-      const usageLimit = isPremium ? Infinity : 5;
+      const usageLimit = 5;
 
       setUsageStatus({
-        userType: isPremium ? 'premium' : 'free',
+        userType: 'free',
         usageCount: currentUsage,
-        usageLimit: isPremium ? Infinity : 5,
-        canUseFeature: isPremium || currentUsage < usageLimit,
+        usageLimit: usageLimit,
+        canUseFeature: currentUsage < usageLimit,
         lastUsedAt,
         resetTime,
-        isPremium,
+        isPremium: false,
       });
     } catch (err) {
       console.error('Failed to fetch usage status:', err);
@@ -68,13 +90,14 @@ export const useUsageTracking = () => {
     } finally {
       setLoading(false);
     }
-  }, [user?.user_id, user?.is_premium, user?.subscription_status, isAuthenticated]);
+  }, [user?.user_id, isAuthenticated, isPremiumUser]);
 
   const trackUsage = useCallback(async (featureName: string, sessionId?: string): Promise<boolean> => {
     if (!user?.user_id || !usageStatus) return false;
 
-    if (usageStatus.isPremium) {
-      return true; // Premium users have unlimited access
+    // Premium users have unlimited access
+    if (isPremiumUser || usageStatus.isPremium) {
+      return true;
     }
 
     if (usageStatus.usageCount >= usageStatus.usageLimit) {
@@ -126,7 +149,7 @@ export const useUsageTracking = () => {
       setError('Failed to track usage');
       return false;
     }
-  }, [user?.user_id, usageStatus]);
+  }, [user?.user_id, usageStatus, isPremiumUser]);
 
   const refreshUsageStatus = useCallback(async () => {
     await fetchUsageStatus();
